@@ -7,6 +7,7 @@
 | titre              	| Titre de l'oeuvre                     	| str            	|
 | sousTitre          	| Sous-titre de l'oeuvre                	| str            	|
 | auteurs            	| Liste des auteurs                     	| liste          	|
+| fonctions           | Liste des fonctions des auteurs         | liste          	|
 | date               	| Date de publication de l'oeuvre       	| str            	|
 | genre              	| Genre de l'oeuvre                     	| str            	|
 | nbPages            	| Nombre de pages de l'oeuvre           	| int            	|
