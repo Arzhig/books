@@ -19,7 +19,7 @@ import json
 
 # %%
 
-entree = str(input("Donner le code ISBN"))
+entree = str(input("Donner le code ISBN  "))
 ISBN = ""
 entree=entree.replace(" ","").replace("-","")
 ISBN=entree
@@ -38,11 +38,11 @@ elif len(ISBN)==13:
         indice = link.find("/dp/")
         url="https://www.amazon.fr"+link[indice:]
     except:
-        print("Une erreur s'est produite veuillez vérifier votre connexion Internet et rééssayer")
+        raise FileNotFoundError("Une erreur s'est produite veuillez vérifier votre connexion Internet et rééssayer")
         
 
 else:
-    print("Erreur dans le format du code ISBN")
+    raise SyntaxError("Erreur dans le format du code ISBN")
 
 # %% [markdown]
 # Récupérer la page html de la page du produit amazon:
@@ -52,20 +52,23 @@ try:
     page=urllib.request.urlopen(url,timeout=100)
     soup2=bs(page,features="html.parser")
 except:
-    print("Une erreur s'est produite veuillez vérifier votre connexion Internet et rééssayer")
+    raise FileNotFoundError("Une erreur s'est produite veuillez vérifier votre connexion Internet et rééssayer")
 # %% [markdown]
 # Création du dictionnaire pour les attributs du livre:
 
 # %%
-fiche={"Titre":"","Sous-Titre":"","Éditeur":"","Auteurs":"","Fonctions":"","Date Parution":"","Genre":"","Nb.pages":"","Poids":0.0,"Prix":0.0,"Image":"","Format":"","Collection":"","Numéro col.":0,"Série":"","Numéro Série":0,"Relié/Broché":"","Consultation":""}
-
+fiche={"isbn10":"","isbn13":"","titre":"","sousTitre":"","editeur":"","auteurs":"","fonctions":"","date":"","genre":"","nbPages":"","poids":0.0,"prix":0.0,"image":"","format":"","collection":"","numeroCollection":0,"serie":"","numeroSerie":0,"reliure":"","consultation":"","creation":""}
+if len(ISBN)==13:
+    fiche["isbn13"]=ISBN
+elif len(ISBN)==10:
+    fiche["isbn10"]=ISBN
 # %% [markdown]
 # Récupération du titre:
 
 # %%
 try:
     titre = soup2.find('span', {'id': 'productTitle'}).text
-    fiche["Titre"]=titre.strip()
+    fiche["titre"]=titre.strip()
 except:
     pass
 # %% [markdown]
@@ -80,8 +83,8 @@ try:
         auteur=auteur.text.replace("\n","").replace(",","")
         a.append(auteur[:auteur.find(" (")])
         f.append(auteur[auteur.find("(")+1:auteur.find(")")])
-    fiche["Auteurs"]=a
-    fiche["Fonctions"]=f
+    fiche["auteurs"]=a
+    fiche["fonctions"]=f
 except:
     pass
 
@@ -98,33 +101,33 @@ try:
     for attribut in poids:
         attribut=attribut.text.replace("  ","").replace("\n","")
         if attribut[:8]==" Éditeur":
-            fiche["Éditeur"]=attribut[attribut.find(":")+1:attribut.find("(")]
-            fiche["Éditeur"]=fiche["Éditeur"].replace("\u200e","").strip()
-            fiche["Date Parution"]=attribut[attribut.find("(")+1:attribut.find(")")].strip()
+            fiche["editeur"]=attribut[attribut.find(":")+1:attribut.find("(")]
+            fiche["editeur"]=fiche["editeur"].replace("\u200e","").strip()
+            fiche["date"]=attribut[attribut.find("(")+1:attribut.find(")")].strip()
         elif attribut[:6]==" Poche":
-            fiche["Relié/Broché"]="Broché"
-            fiche["Nb.pages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
-            fiche["Nb.pages"]=int(fiche["Nb.pages"].replace("\u200e",""))
+            fiche["reliure"]="Broché"
+            fiche["nbPages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
+            fiche["nbPages"]=int(fiche["nbPages"].replace("\u200e",""))
         elif attribut[:7]==" Broché":
-            fiche["Relié/Broché"]="Broché"
-            fiche["Nb.pages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
-            fiche["Nb.pages"]=int(fiche["Nb.pages"].replace("\u200e",""))
+            fiche["reliure"]="Broché"
+            fiche["nbPages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
+            fiche["nbPages"]=int(fiche["nbPages"].replace("\u200e",""))
         elif attribut[:6]==" Relié":
-            fiche["Relié/Broché"]=" Relié"
-            fiche["Nb.pages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
-            fiche["Nb.pages"]=int(fiche["Nb.pages"].replace("\u200e",""))
+            fiche["reliure"]=" Relié"
+            fiche["nbPages"]=attribut[attribut.find(":")+1:attribut.find("pages")]
+            fiche["nbPages"]=int(fiche["nbPages"].replace("\u200e",""))
 
         elif attribut[:19]==" Poids de l'article":
             if attribut[-3:]==" g ":
-                fiche["Poids"]=attribut[attribut.find(":")+1:attribut.find("g")]
-                fiche["Poids"]=float(fiche["Poids"].replace("\u200e",""))
+                fiche["poids"]=attribut[attribut.find(":")+1:attribut.find("g")]
+                fiche["poids"]=float(fiche["poids"].replace("\u200e",""))
             elif attribut[-3:]=="kg ":
-                fiche["Poids"]=attribut[attribut.find(":")+1:attribut.find("kg")]
-                fiche["Poids"]=float(fiche["Poids"].replace("\u200e",""))*1000
+                fiche["poids"]=attribut[attribut.find(":")+1:attribut.find("kg")]
+                fiche["poids"]=float(fiche["poids"].replace("\u200e",""))*1000
 
         elif attribut[:11]==" Dimensions":
-            fiche["Format"]=attribut[attribut.find(":")+1:attribut.find("cm")+2]
-            fiche["Format"]=(fiche["Format"].replace("\u200e","").strip())
+            fiche["format"]=attribut[attribut.find(":")+1:attribut.find("cm")+2]
+            fiche["format"]=(fiche["format"].replace("\u200e","").strip())
 except:
     pass
         
@@ -136,8 +139,8 @@ except:
 # %%
 try:
     prix=soup2.find('span', {'class': 'a-offscreen'})
-    fiche["Prix"]=prix.text[:-1].replace(",",".").strip()
-    fiche["Prix"]=float(fiche["Prix"].replace("\xa0",""))
+    fiche["prix"]=prix.text[:-1].replace(",",".").strip()
+    fiche["prix"]=float(fiche["prix"].replace("\xa0",""))
 except:
     pass
 # %% [markdown]
@@ -149,12 +152,12 @@ try:
     serie=serie.text
     if serie[:7]=="  Fait ":
         serie_nom=serie[serie.find("    ")+5:]
-        fiche["Série"]=serie_nom.strip()
+        fiche["serie"]=serie_nom.strip()
     elif serie[:7]=="  Livre":
         numero=serie[serie.find("Livre")+5:serie.find("sur")]
         serie_nom=serie[serie.find("    ")+5:]
-        fiche["Numéro Série"]=int(numero)
-        fiche["Série"]=serie_nom.strip()
+        fiche["numeroSerie"]=int(numero)
+        fiche["serie"]=serie_nom.strip()
 except:
     pass
 
@@ -180,24 +183,23 @@ except:
 try:
     urllib.request.urlretrieve(lien, "C:/Users/tommy/Documents/Travail/Codev/couverture/"+ISBN+".jpg")
 except:
-    pass
+    print("Problème de récupération de l'image")
 # %% [markdown]
 # Mettre le lien local de l'image sur la fiche:
 
 # %%
-fiche["Image"]="C:/Users/tommy/Documents/Travail/Codev/couverture/"+ISBN+".jpg"
+fiche["image"]="C:/Users/tommy/Documents/Travail/Codev/couverture/"+ISBN+".jpg"
 
 # %% [markdown]
 # Mettre l'horodatage de la consultation du site:
 
 # %%
-path = fiche["Image"]
+path = fiche["image"]
 ti_m = os.path.getmtime(path)
 m_ti = time.ctime(ti_m)
 t_obj = time.strptime(m_ti)
 T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-fiche["Consultation"]=T_stamp
-print(fiche)
+fiche["consultation"]=T_stamp
 
 # %% [markdown]
 # Transformer l'élément fiche de type dictionnaire en fichier JSON:
@@ -207,5 +209,10 @@ jsonString = json.dumps(fiche)
 jsonFile = open("C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json", "w")
 jsonFile.write(jsonString)
 jsonFile.close()
-
-
+path = "C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json"
+ti_m = os.path.getmtime(path)
+m_ti = time.ctime(ti_m)
+t_obj = time.strptime(m_ti)
+T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
+fiche["creation"]=T_stamp
+print(fiche)
