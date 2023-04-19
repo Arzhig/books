@@ -7,9 +7,10 @@
 | titre              	| Titre de l'oeuvre                     	| str            	|
 | sousTitre          	| Sous-titre de l'oeuvre                	| str            	|
 | auteurs            	| Liste des auteurs                     	| liste          	|
-| fonctions           | Liste des fonctions des auteurs         | liste          	|
+| fonctions             | Liste des fonctions des auteurs           | liste          	|
 | editeur            	| Editeur de l'oeuvre                    	| str           	|
 | date               	| Date de publication de l'oeuvre       	| str            	|
+| image               	| Lien local de l'image de l'oeuvre     	| str            	|
 | genre              	| Genre de l'oeuvre                     	| str            	|
 | nbPages            	| Nombre de pages de l'oeuvre           	| int            	|
 | poids              	| Poids de l'oeuvre en grammes          	| float          	|
