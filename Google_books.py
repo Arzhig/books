@@ -2,6 +2,7 @@
 import json
 #lib pour ouvrir et lire les url
 from urllib.request import urlopen
+from datetime import datetime
 
 test_isbn_hp = '9780747573609'
 test_isbn_python = '1593276036'
@@ -30,6 +31,7 @@ def extract(raw):
     data['date'] = raw.get('publishedDate')
     data['nbPages'] = raw.get('pageCount')
     data['genre'] = raw.get('categories')
+    data['consultation'] = datetime.now().strftime("%Y-%m-%d/ %H:%M:%S")
     return data
 
 extract(raw)
