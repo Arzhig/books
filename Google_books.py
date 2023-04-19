@@ -2,6 +2,7 @@
 import json
 #lib pour ouvrir et lire les url
 from urllib.request import urlopen
+from datetime import datetime
 
 test_isbn_hp = '9780747573609'
 test_isbn_python = '1593276036'
@@ -21,15 +22,16 @@ raw = get_book_raw(test_isbn_hp)
 print(raw)
 def extract(raw):
     data = {}
-    data['isbn_10'] = raw.get('industryIdentifiers')[0]['identifier']
-    data['isbn_13'] = raw.get('industryIdentifiers')[1]['identifier']
+    data['isbn10'] = raw.get('industryIdentifiers')[0]['identifier']
+    data['isbn13'] = raw.get('industryIdentifiers')[1]['identifier']
     data['titre'] = raw.get('title')
-    data['sous-titre'] = raw.get('subtitle')
-    data['auteur(s)'] = raw.get('authors')
-    data['éditeur'] = raw.get('publisher')
-    data['publication'] = raw.get('publishedDate')
-    data['Nombre de pages'] = raw.get('pageCount')
-    data['Genre'] = raw.get('categories')
+    data['sousTitre'] = raw.get('subtitle')
+    data['auteurs'] = raw.get('authors')
+    data['editeur'] = raw.get('publisher')
+    data['date'] = raw.get('publishedDate')
+    data['nbPages'] = raw.get('pageCount')
+    data['genre'] = raw.get('categories')
+    data['consultation'] = datetime.now().strftime("%Y-%m-%d/ %H:%M:%S")
     return data
 
 extract(raw)
