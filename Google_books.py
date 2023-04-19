@@ -21,14 +21,14 @@ raw = get_book_raw(test_isbn_hp)
 print(raw)
 def extract(raw):
     data = {}
-    data['isbn_10'] = raw.get('industryIdentifiers')[0]['identifier']
-    data['isbn_13'] = raw.get('industryIdentifiers')[1]['identifier']
+    data['isbn10'] = raw.get('industryIdentifiers')[0]['identifier']
+    data['isbn13'] = raw.get('industryIdentifiers')[1]['identifier']
     data['titre'] = raw.get('title')
-    data['sous-titre'] = raw.get('subtitle')
-    data['auteur(s)'] = raw.get('authors')
-    data['éditeur'] = raw.get('publisher')
-    data['publication'] = raw.get('publishedDate')
-    data['nombre de pages'] = raw.get('pageCount')
+    data['sousTitre'] = raw.get('subtitle')
+    data['auteurs'] = raw.get('authors')
+    data['editeur'] = raw.get('publisher')
+    data['date'] = raw.get('publishedDate')
+    data['nbPages'] = raw.get('pageCount')
     data['genre'] = raw.get('categories')
     return data
 
