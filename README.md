@@ -7,10 +7,10 @@
 | titre              	| Titre de l'oeuvre                     	| str            	|
 | sousTitre          	| Sous-titre de l'oeuvre                	| str            	|
 | auteurs            	| Liste des auteurs                     	| liste          	|
-| fonctions             | Liste des fonctions des auteurs           | liste          	|
+| fonctions           | Liste des fonctions des auteurs         | liste          	|
 | editeur            	| Editeur de l'oeuvre                    	| str           	|
 | date               	| Date de publication de l'oeuvre       	| str            	|
-| image               	| Lien local de l'image de l'oeuvre     	| str            	|
+| image               | Lien local de l'image de l'oeuvre     	| str            	|
 | genre              	| Genre de l'oeuvre                     	| str            	|
 | nbPages            	| Nombre de pages de l'oeuvre           	| int            	|
 | poids              	| Poids de l'oeuvre en grammes          	| float          	|
@@ -26,3 +26,7 @@
 
 ## Liste des ISBN test
 
+| Ouvrage           	| ISBN 10            | ISBN 13 	          |
+|--------------------	|--------------------|--------------------|
+| L'odysée            | 2211124485         | 978-2-211-12448-5  |
+| L'écume des jours   | 2756021638         | 978-2-7560-2163-8  |
