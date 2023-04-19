@@ -28,8 +28,8 @@ def extract(raw):
     data['auteur(s)'] = raw.get('authors')
     data['éditeur'] = raw.get('publisher')
     data['publication'] = raw.get('publishedDate')
-    data['Nombre de pages'] = raw.get('pageCount')
-    data['Genre'] = raw.get('categories')
+    data['nombre de pages'] = raw.get('pageCount')
+    data['genre'] = raw.get('categories')
     return data
 
 extract(raw)
