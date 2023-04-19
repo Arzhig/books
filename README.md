@@ -23,3 +23,6 @@
 | reliure            	| Relié/Broché                          	| str            	|
 | consultation       	| Date de consultation du site          	| str            	|
 | creation           	| Date de creation du dictionnaire      	| str            	|
+
+## Liste des ISBN test
+
