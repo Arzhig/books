@@ -9,7 +9,7 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 import urllib.request
 import os
-import time
+from datetime import datetime
 import json
 
 # %% [markdown]
@@ -194,12 +194,7 @@ fiche["image"]="C:/Users/tommy/Documents/Travail/Codev/couverture/"+ISBN+".jpg"
 # Mettre l'horodatage de la consultation du site:
 
 # %%
-path = fiche["image"]
-ti_m = os.path.getmtime(path)
-m_ti = time.ctime(ti_m)
-t_obj = time.strptime(m_ti)
-T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-fiche["consultation"]=T_stamp
+fiche["consultation"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 # %% [markdown]
 # Transformer l'élément fiche de type dictionnaire en fichier JSON:
@@ -209,10 +204,4 @@ jsonString = json.dumps(fiche)
 jsonFile = open("C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json", "w")
 jsonFile.write(jsonString)
 jsonFile.close()
-path = "C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json"
-ti_m = os.path.getmtime(path)
-m_ti = time.ctime(ti_m)
-t_obj = time.strptime(m_ti)
-T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-fiche["creation"]=T_stamp
 print(fiche)
