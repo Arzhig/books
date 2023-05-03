@@ -18,10 +18,30 @@ def get_book_raw(code):
     infos=book_data['items'][0]['volumeInfo']
     return(infos)
 
-raw = get_book_raw(test_isbn_hp)
-print(raw)
+raw = get_book_raw('2253941700')
+#print(raw)
 def extract(raw):
-    data = {}
+    data = {"isbn10"           :"",
+             "isbn13"           :"",
+             "titre"            :"",
+             "sousTitre"        :"",
+             "editeur"          :"",
+             "auteurs"          :"",
+             "fonctions"        :"",
+             "date"             :"",
+             "genre"            :"",
+             "nbPages"          :"",
+             "poids"            :0.0,
+             "prix"             :0.0,
+             "image"            :"",
+             "format"           :"",
+             "collection"       :"",
+             "numeroCollection" :0,
+             "serie"            :"",
+             "numeroSerie"      :0,
+             "reliure"          :"",
+             "consultation"     :"",
+             "creation"         :""}
     data['isbn10'] = raw.get('industryIdentifiers')[0]['identifier']
     data['isbn13'] = raw.get('industryIdentifiers')[1]['identifier']
     data['titre'] = raw.get('title')
@@ -29,9 +49,9 @@ def extract(raw):
     data['auteurs'] = raw.get('authors')
     data['editeur'] = raw.get('publisher')
     data['date'] = raw.get('publishedDate')
-    data['nbPages'] = raw.get('pageCount')
+    data['nbPages'] = int(raw.get('pageCount'))
     data['genre'] = raw.get('categories')
-    data['consultation'] = datetime.now().strftime("%Y-%m-%d/ %H:%M:%S")
+    data['consultation'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return data
 
-extract(raw)
+print(extract(raw))
