@@ -2,6 +2,7 @@
 from fiche_test import google,amazon
 from fuzzywuzzy import fuzz
 import copy
+from datetime import datetime
 
 sources={'amazon':amazon,'google':google}
 
@@ -32,7 +33,7 @@ def sont_equivalents(attribut:list):
 
 def est_equivalent(attribut1,attribut2):
     if type(attribut1)==str:
-        if fuzz.partial_ratio(attribut1,attribut2)>85:
+        if fuzz.partial_ratio(attribut1,attribut2)>75:
             return True
     else:
         return attribut1==attribut2
@@ -111,15 +112,19 @@ def aggreg_2(sources:dict,priorite:dict):
         else:
             attribut = []
             for source in sources:
+                # Regarder si les attributs sont nuls et s'il en reste 1 
                 if sources[source][key]!= "" and sources[source][key]!=0 and  sources[source][key]!= None:
                     attribut.append(sources[source][key])
             if len(attribut)==1:
                 final[key]=attribut[0]
             elif len(attribut)>1:
+                #On regarde si les attributs sont équivalents
                 attribut=sont_equivalents(attribut)
                 if len(attribut)==1:
+                    # s'il en reste 1 on le choisi
                     final[key]=attribut[0]
                 else:
+                    #sinon on demande à l'utilisateur de choisir quel argument il choisit
                     print("Collision pour l'entrée " + key)
                     for i in range(len(attribut)):
                         print("Choix",i,":",attribut[i])
@@ -129,7 +134,7 @@ def aggreg_2(sources:dict,priorite:dict):
                         if (not (choice in list(range(len(attribut))))):
                             print("Valeur incorrecte")
                     final[key]=attribut[choice]
-
+    final["creation"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return final
     
 print(aggreg_2(sources,priorite))
