@@ -42,7 +42,7 @@ def extraction_amazon(entree:str):
 
 
     try:
-        page=urllib.request.urlopen(url,timeout=100)
+        page=urllib.request.urlopen(url,timeout=1000)
         soup2=bs(page,features="html.parser")
     except:
         raise FileNotFoundError("Une erreur s'est produite veuillez vérifier votre connexion Internet et rééssayer")
@@ -145,22 +145,11 @@ def extraction_amazon(entree:str):
 
     fiche["image"]="C:/Users/tommy/Documents/Travail/Codev/couverture/"+ISBN+".jpg"
 
-    path = fiche["image"]
-    ti_m = os.path.getmtime(path)
-    m_ti = time.ctime(ti_m)
-    t_obj = time.strptime(m_ti)
-    T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-    fiche["consultation"]=T_stamp
+    fiche["consultation"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     jsonString = json.dumps(fiche)
     jsonFile = open("C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json", "w")
     jsonFile.write(jsonString)
     jsonFile.close()
-    path = "C:/Users/tommy/Documents/Travail/Codev/json_amazon/"+ISBN+".json"
-    ti_m = os.path.getmtime(path)
-    m_ti = time.ctime(ti_m)
-    t_obj = time.strptime(m_ti)
-    T_stamp = time.strftime("%Y-%m-%d %H:%M:%S", t_obj)
-    fiche["creation"]=T_stamp
     return(fiche)
 
 
@@ -216,7 +205,7 @@ def extract(raw):
     data['date'] = raw.get('publishedDate')
     data['nbPages'] = int(raw.get('pageCount'))
     data['genre'] = raw.get('categories')
-    data['consultation'] = datetime.now().strftime("%Y-%m-%d/ %H:%M:%S")
+    data['consultation'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     return data
 
 
@@ -252,7 +241,7 @@ def sont_equivalents(attribut:list):
                             pass
     return new_attribut
 
-def aggregation(sources:dict,priorite:dict):
+def aggregation(sources:dict,priorite:dict,entree:str):
     final = {"isbn10":"","isbn13":"","titre":"","sousTitre":"","editeur":"","auteurs":"","fonctions":"","date":"","genre":"","nbPages":"","poids":0.0,"prix":0.0,"image":"","format":"","collection":"","numeroCollection":0,"serie":"","numeroSerie":0,"reliure":"","consultation":"","creation":""}
     for key in final:
         # Si on décide qu'une source a des priorités sur d'autres et que de plus elle soit rempli
@@ -284,7 +273,10 @@ def aggregation(sources:dict,priorite:dict):
                             print("Valeur incorrecte")
                     final[key]=attribut[choice]
     final["creation"]=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+    jsonString = json.dumps(final)
+    jsonFile = open("C:/Users/tommy/Documents/Travail/Codev/agreg/"+entree+".json", "w")
+    jsonFile.write(jsonString)
+    jsonFile.close()
     return final
 
 entree=input("Donner le code ISBN")
@@ -293,12 +285,10 @@ fiche_google={"isbn10":"","isbn13":"","titre":"","sousTitre":"","editeur":"","au
 try:
     fiche_amazon=extraction_amazon(entree)
 except:
-    print("AMAZON")
     pass
 try:
     fiche_google=extraction_google(entree)
 except:
-    print("GOOGLE")
     pass
 priorite = {"isbn10"            :"",
             "isbn13"            :"",
@@ -312,7 +302,7 @@ priorite = {"isbn10"            :"",
             "nbPages"           :"",
             "poids"             :"",
             "prix"              :"",
-            "image"             :"",
+            "image"             :"amazon",
             "format"            :"",
             "collection"        :"",
             "numeroCollection"  :"",
@@ -323,5 +313,5 @@ priorite = {"isbn10"            :"",
             "creation"          :""
             }
 sources={"amazon":fiche_amazon,"google":fiche_google}
-fiche_aggrege=aggregation(sources,priorite)
+fiche_aggrege=aggregation(sources,priorite,entree)
 print(fiche_aggrege)
