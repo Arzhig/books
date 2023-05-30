@@ -44,7 +44,7 @@ def creer_fiche(ISBN,dossier,fiche):
 
 
 # Definition des fonctions pour l'extraction Amazon
-
+# En entrée le code ISBN et en sortie une fiche complétée avec les informations disponibles sur Amazon
 def extraction_amazon(entree:str):
     ISBN = ""
     ISBN=entree.replace(" ","").replace("-","")
@@ -182,7 +182,7 @@ def extraction_amazon(entree:str):
 
 
 # Definition des fonctions pour l'extraction Google Books
-
+# Fonction globale permettant d'obtenir une fiche completee avec les informations sur Google Books avec le code ISBN en entree
 
 def extraction_google(entree:str):
     ISBN = ""
@@ -191,20 +191,20 @@ def extraction_google(entree:str):
     fiche_google= extract(get_book_raw(ISBN))
     creer_fiche(entree,'fiche_google',fiche_google)
     return fiche_google
-
+# fonction donne a partir d'un ISBN un dictionnaire contenant les informations donnees par l'API de Google Books
 def get_book_raw(code):
     #variables de départ : url "vide" et isbn
     api = "https://www.googleapis.com/books/v1/volumes?q=isbn:"
     isbn = code.strip()
 
-    #récupérer la réponse serveur http liée à l'isbn demandé
+    #recuperer la reponse serveur http liee a l'isbn demande
     reponse = urlopen(api + isbn)
     #extraire les données du json de la reponse, et les charger dans un dictionnaire python
     book_data = json.load(reponse)
     infos=book_data['items'][0]['volumeInfo']
     return(infos)
 
-
+# fonction en entree un dictionnaire python et redonne la fiche completee des informations disponibles de cette fiche
 def extract(raw):
     data = {"isbn10"           :"",
              "isbn13"           :"",
@@ -244,12 +244,14 @@ def extract(raw):
 
 
 # definition des fonctions d'aggregation:
+#fonction qui compare 2 arguments et definie si elles sont equivalentes ou non
 def est_equivalent(attribut1,attribut2):
     if type(attribut1)==str:
         if fuzz.partial_ratio(utils.full_process(attribut1),utils.full_process(attribut2))>75:
             return True
     else:
         return attribut1==attribut2
+# fonction qui a partir d'une liste d'attribut va rendre une nouvelle liste sans les attributs qui sont equivalents a d'autres
 def sont_equivalents(attribut:list):
     new_attribut=copy.deepcopy(attribut)
     for i in range(len(attribut)):
@@ -273,7 +275,7 @@ def sont_equivalents(attribut:list):
                         except:
                             pass
     return new_attribut
-
+# fonction qui va permettre d'agreger des fiches 
 def aggregation(sources:dict,priorite:dict,entree:str):
     final = {"isbn10":"","isbn13":"","titre":"","sousTitre":"","editeur":"","auteurs":"","fonctions":"","date":"","genre":"","nbPages":"","poids":0.0,"prix":0.0,"image":"","format":"","collection":"","numeroCollection":0,"serie":"","numeroSerie":0,"reliure":"","consultation":"","creation":""}
     for key in final:
